@@ -117,7 +117,7 @@ class CategoriesView:
                 ft.TextButton("Delete", on_click=confirm_delete, style=ft.ButtonStyle(color=ft.Colors.RED_400)),
             ],
         )
-        self.page.open(dialog)
+        self.page.show_dialog(dialog)
 
 
 if __name__ == "__main__":

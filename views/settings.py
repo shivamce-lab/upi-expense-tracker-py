@@ -18,8 +18,8 @@ class SettingsView:
     def __init__(self, page: ft.Page, on_theme_change=None) -> None:
         self.page = page
         self.on_theme_change = on_theme_change
-        self.container = ft.Container(expand=True, bgcolor=ft.Colors.WHITE)
-        self.file_picker = ft.FilePicker(self._on_restore_picked)
+        self.container = ft.Container(expand=True, bgcolor=theme.get_palette()["bg"],)
+        self.file_picker = ft.FilePicker()
         page.services.append(self.file_picker)
         self._pending_restore_password: str | None = None
 
@@ -34,8 +34,9 @@ class SettingsView:
         self.page.update()
 
     def _build_body(self) -> ft.Control:
+        palette = theme.get_palette()
         current_theme = db.get_setting("theme", "light")
-        currency = db.get_setting("currency_symbol", "$")
+        currency = db.get_setting("currency_symbol", "₹")
 
         theme_switch = ft.Switch(
             value=current_theme == "dark", label="Dark theme",
@@ -45,7 +46,7 @@ class SettingsView:
         currency_field = ft.TextField(label="Currency symbol", value=currency, width=120)
 
         def save_currency(e: ft.ControlEvent) -> None:
-            db.set_setting("currency_symbol", currency_field.value or "$")
+            db.set_setting("currency_symbol", currency_field.value or "₹")
             components.show_info(self.page, "Currency updated.")
 
         passcode_status = "Passcode is set." if db.get_setting("passcode_hash") else "No passcode set."
@@ -77,12 +78,22 @@ class SettingsView:
             except Exception as ex:
                 components.show_error(self.page, f"Backup failed: {ex}")
 
-        def do_restore(e: ft.ControlEvent) -> None:
+        async def do_restore(e: ft.ControlEvent) -> None:
             if not backup_password_field.value:
                 components.show_error(self.page, "Enter the backup's password first.")
                 return
             self._pending_restore_password = backup_password_field.value
-            self.file_picker.pick_files(allow_multiple=False)
+            result_files = await self.file_picker.pick_files(allow_multiple=False)
+            if not result_files:
+                return
+            path = result_files[0].path
+            try:
+                backup_service.restore_backup(path, self._pending_restore_password)
+                components.show_info(self.page, "Restore complete. Restart the app to see restored data.")
+            except Exception as ex:
+                components.show_error(self.page, f"Restore failed: {ex}")
+            finally:
+                self._pending_restore_password = None
 
         gdrive_switch = ft.Switch(
             value=gdrive.is_enabled(), label="Sync to Google Drive (optional)",
@@ -109,7 +120,7 @@ class SettingsView:
         body = ft.Column(
             scroll=ft.ScrollMode.AUTO, expand=True, spacing=22,
             controls=[
-                ft.Text("Settings", size=22, weight=ft.FontWeight.BOLD),
+                ft.Text("Settings", size=22, weight=ft.FontWeight.BOLD, color=palette["text"]),
 
                 components.section_title("Appearance"),
                 theme_switch,
@@ -118,7 +129,7 @@ class SettingsView:
                 ft.Row(controls=[currency_field, ft.TextButton("Save", on_click=save_currency)]),
 
                 components.section_title("Passcode lock"),
-                ft.Text(passcode_status, size=12, color=ft.Colors.GREY_600),
+                ft.Text(passcode_status, size=12, color=palette["muted"]),
                 ft.Row(controls=[passcode_field, ft.TextButton("Set", on_click=set_pin), ft.TextButton("Remove", on_click=clear_pin)]),
 
                 components.section_title("Recurring & subscriptions"),
@@ -128,19 +139,19 @@ class SettingsView:
                 backup_password_field,
                 ft.Row(controls=[
                     ft.Button(content="Create encrypted backup", icon=ft.Icons.LOCK_OUTLINE, on_click=do_backup),
-                    ft.OutlinedButton("Restore from file", icon=ft.Icons.RESTORE, on_click=do_restore),
+                    ft.OutlinedButton("Restore from file", icon=ft.Icons.RESTORE, on_click=lambda e: self.page.run_task(do_restore)),
                 ]),
 
                 components.section_title("Google Drive sync (optional, off by default)"),
                 gdrive_switch,
-                ft.Text(gdrive_note, size=11, color=ft.Colors.GREY_500),
+                ft.Text(gdrive_note, size=11, color=palette["muted"]),
 
                 components.section_title("AI insight keys (optional, fully offline without these)"),
                 openai_key_field, gemini_key_field,
                 ft.TextButton("Save keys", on_click=save_ai_keys),
             ],
         )
-        return ft.Container(expand=True, bgcolor=ft.Colors.WHITE, padding=ft.Padding.symmetric(horizontal=16, vertical=10), content=body)
+        return ft.Container(expand=True, bgcolor=palette["bg"], padding=ft.Padding.symmetric(horizontal=16, vertical=10), content=body)
 
     def _toggle_theme(self) -> None:
         palette = theme.toggle_theme(self.page)
@@ -154,18 +165,6 @@ class SettingsView:
         else:
             gdrive.disable_sync()
         components.show_info(self.page, "Google Drive sync " + ("enabled." if value else "disabled."))
-
-    def _on_restore_picked(self, e: ft.FilePickerResultEvent) -> None:
-        if not e.files or not self._pending_restore_password:
-            return
-        path = e.files[0].path
-        try:
-            backup_service.restore_backup(path, self._pending_restore_password)
-            components.show_info(self.page, "Restore complete. Restart the app to see restored data.")
-        except Exception as ex:
-            components.show_error(self.page, f"Restore failed: {ex}")
-        finally:
-            self._pending_restore_password = None
 
 
 if __name__ == "__main__":

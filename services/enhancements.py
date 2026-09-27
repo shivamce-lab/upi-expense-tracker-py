@@ -3,7 +3,7 @@
 Single-file enhancement layer for MyMoney.
 
 Solves three problems in one module:
-  1. Rupee (INR) formatting with Indian lakh/crore grouping — replaces "$X.XX" everywhere.
+  1. Rupee (INR) formatting with Indian lakh/crore grouping — replaces "₹X.XX" everywhere.
   2. Unlimited category creation — a helper that never runs out, auto-picks icon + color.
   3. Offline PDF bank-statement import — pdfplumber text layer first, pytesseract OCR fallback.
 Plus: UI polish helpers (card, chip, empty_state) used by new screens.
@@ -25,7 +25,7 @@ import db  # project-local
 
 
 # ============================================================
-# 1.  RUPEES — Indian grouping, drop-in for "$X.XX"
+# 1.  RUPEES — Indian grouping, drop-in for "₹X.XX"
 # ============================================================
 
 INR = "₹"
@@ -135,12 +135,15 @@ def bulk_add_categories(spec: Iterable[str], type_: str = "expense") -> list[int
             continue
     return ids
 
-
-def open_add_category_dialog(page: ft.Page, on_done=None) -> None:
-    """Ready-made dialog that lets the user add a category with no cap."""
-    name_field = ft.TextField(label="Category name", autofocus=True)
+def open_add_category_dialog(page: ft.Page, on_saved=None, prefill: dict | None = None) -> None:
+    """Ready-made dialog that lets the user add or edit a category with no cap."""
+    name_field = ft.TextField(
+        label="Category name",
+        autofocus=True,
+        value=prefill["name"] if prefill else "",
+    )
     type_toggle = ft.CupertinoSegmentedButton(
-        selected_index=0,
+        selected_index=1 if (prefill and prefill.get("type") == "income") else 0,
         controls=[ft.Text("Expense"), ft.Text("Income")],
     )
 
@@ -155,14 +158,13 @@ def open_add_category_dialog(page: ft.Page, on_done=None) -> None:
             page.show_dialog(ft.SnackBar(ft.Text(str(ex)), bgcolor=ft.Colors.RED_400))
             return
         close()
-        if on_done:
-            on_done()
+        if on_saved:
+            on_saved()
 
     page.show_dialog(ft.AlertDialog(
         modal=True,
-        title=ft.Text("Create Category"),
-        content=ft.Column(tight=True, width=300,
-                          controls=[type_toggle, name_field]),
+        title=ft.Text("Edit Category" if prefill else "Create Category"),
+        content=ft.Column(tight=True, width=300, controls=[type_toggle, name_field]),
         actions=[
             ft.TextButton("Cancel", on_click=close),
             ft.FilledButton("Save", on_click=save),

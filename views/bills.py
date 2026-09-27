@@ -68,7 +68,7 @@ class BillsView:
                                 ft.Row(
                                     alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                                     controls=[
-                                        ft.Text(f"${bill['amount']:,.2f}  ·  due {item['due'].isoformat()}", size=12, color=ft.Colors.GREY_600),
+                                        ft.Text(f"₹{bill['amount']:,.2f}  ·  due {item['due'].isoformat()}", size=12, color=ft.Colors.GREY_600),
                                         ft.TextButton("Mark paid", on_click=lambda e, bid=bill["id"]: self._mark_paid(bid)),
                                     ],
                                 ),
@@ -91,7 +91,7 @@ class BillsView:
                                 spacing=0,
                                 controls=[
                                     ft.Text(b["name"], size=14, weight=ft.FontWeight.W_600),
-                                    ft.Text(f"${b['amount']:,.2f}  ·  {b['cycle']}", size=11, color=ft.Colors.GREY_600),
+                                    ft.Text(f"₹{b['amount']:,.2f}  ·  {b['cycle']}", size=11, color=ft.Colors.GREY_600),
                                 ],
                             ),
                             ft.PopupMenuButton(

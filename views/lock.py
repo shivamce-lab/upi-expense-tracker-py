@@ -71,7 +71,7 @@ class LockView:
         return ft.Container(
             expand=True,
             bgcolor=ft.Colors.WHITE,
-            alignment=ft.alignment.center,
+            alignment=ft.Alignment.CENTER,
             content=ft.Column(
                 scroll=ft.ScrollMode.AUTO,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,

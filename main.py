@@ -100,12 +100,11 @@ def main(page: ft.Page) -> None:
     else:
         show_onboarding_if_needed()
 
-
 def build_shell(page: ft.Page) -> None:
     """Build the header, NavigationBar, drawer, FAB, and view routing for the main app."""
+    palette = theme.get_palette()
     prior_tab = {"screen": "records", "index": 0}
-
-    content = ft.Container(expand=True, bgcolor=ft.Colors.WHITE)
+    content = ft.Container(expand=True, bgcolor=palette["bg"])
     nav_screens = ["records", "analysis", "budgets", "accounts", "categories"]
 
     records_view = RecordsView(page)
@@ -209,7 +208,7 @@ def build_shell(page: ft.Page) -> None:
         state.set_screen(screen)
         content.content = nav_builders[screen]()
         update_fab()
-        page.close(drawer)
+        page.run_task(page.close_drawer)
         page.update()
 
     drawer = ft.NavigationDrawer(
@@ -239,7 +238,7 @@ def build_shell(page: ft.Page) -> None:
 
     title_row = ft.Row(
         controls=[
-            ft.IconButton(icon=ft.Icons.MENU, on_click=lambda e: page.open(drawer)),
+            ft.IconButton(icon=ft.Icons.MENU, on_click=lambda e: page.run_task(page.show_drawer)),
             ft.Text("MyMoney", size=22, weight=ft.FontWeight.BOLD),
         ]
     )

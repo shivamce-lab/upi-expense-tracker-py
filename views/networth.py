@@ -53,18 +53,18 @@ class NetWorthView:
             controls=[
                 ft.Text("Net Worth", size=22, weight=ft.FontWeight.BOLD),
                 ft.Text(
-                    f"${net_worth:,.2f}", size=30, weight=ft.FontWeight.BOLD,
+                    f"₹{net_worth:,.2f}", size=30, weight=ft.FontWeight.BOLD,
                     color=ft.Colors.GREEN_600 if net_worth >= 0 else ft.Colors.RED_400,
                 ),
                 ft.Row(
                     controls=[
                         ft.Column(expand=True, controls=[
                             ft.Text("You own", size=11, color=ft.Colors.GREY_600),
-                            ft.Text(f"${assets:,.2f} · {own_pct:.0f}%", size=14, weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_600),
+                            ft.Text(f"₹{assets:,.2f} · {own_pct:.0f}%", size=14, weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_600),
                         ]),
                         ft.Column(expand=True, controls=[
                             ft.Text("You owe", size=11, color=ft.Colors.GREY_600),
-                            ft.Text(f"${liabilities:,.2f} · {owe_pct:.0f}%", size=14, weight=ft.FontWeight.BOLD, color=ft.Colors.RED_400),
+                            ft.Text(f"₹{liabilities:,.2f} · {owe_pct:.0f}%", size=14, weight=ft.FontWeight.BOLD, color=ft.Colors.RED_400),
                         ]),
                     ]
                 ),

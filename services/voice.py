@@ -57,12 +57,12 @@ def parse_command(text: str) -> dict:
         amount = _words_to_number(amount_phrase)
 
     category = None
-    cat_match = re.search(r"\bon\s+([a-z ]+?)(?:\s+from\b|$)", text_lower)
+    cat_match = re.search(r"\bon\s+([a-z ]+?)(?:\s+from\b|₹)", text_lower)
     if cat_match:
         category = cat_match.group(1).strip()
 
     account = None
-    acc_match = re.search(r"\bfrom\s+([a-z ]+)$", text_lower)
+    acc_match = re.search(r"\bfrom\s+([a-z ]+)₹", text_lower)
     if acc_match:
         account = acc_match.group(1).strip()
 

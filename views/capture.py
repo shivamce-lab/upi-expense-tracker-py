@@ -19,8 +19,8 @@ class CaptureView:
         self.page = page
         self.open_add_transaction = open_add_transaction  # callback(prefill: dict) -> None
         self.container = ft.Container(expand=True, bgcolor=ft.Colors.WHITE)
-        self.file_picker = ft.FilePicker(self._on_file_picked)
-        page.overlay.append(self.file_picker)
+        self.file_picker = ft.FilePicker()
+        page.services.append(self.file_picker)
 
     def build(self) -> ft.Container:
         """Build (or rebuild) the Capture screen content."""
@@ -64,7 +64,7 @@ class CaptureView:
                     padding=14, border=ft.Border.all(1, ft.Colors.GREY_200), border_radius=12,
                     content=ft.Column(spacing=8, controls=[
                         ft.Text(ocr_status, size=12, color=ft.Colors.GREY_600),
-                        ft.Button(content="Pick receipt image", icon=ft.Icons.IMAGE_OUTLINED, on_click=lambda e: self._pick_receipt()),
+                        ft.Button(content="Pick receipt image", icon=ft.Icons.IMAGE_OUTLINED, on_click=lambda e: self.page.run_task(self._pick_receipt)),
                     ]),
                 ),
                 components.section_title("Voice add"),
@@ -82,17 +82,14 @@ class CaptureView:
         return ft.Container(expand=True, bgcolor=ft.Colors.WHITE, padding=ft.Padding.symmetric(horizontal=16, vertical=10), content=body)
 
     # ------------------------------------------------------------ receipt OCR
-
-    def _pick_receipt(self) -> None:
+    async def _pick_receipt(self) -> None:
         if not ocr_service.is_available():
             components.show_error(self.page, "OCR unavailable: pip install pytesseract Pillow.")
             return
-        self.file_picker.pick_files(allow_multiple=False, file_type=ft.FilePickerFileType.IMAGE)
-
-    def _on_file_picked(self, e: ft.FilePickerResultEvent) -> None:
-        if not e.files:
+        result_files = await self.file_picker.pick_files(allow_multiple=False, file_type=ft.FilePickerFileType.IMAGE)
+        if not result_files:
             return
-        path = e.files[0].path
+        path = result_files[0].path
         try:
             result = ocr_service.extract_receipt(path)
         except Exception as ex:
@@ -169,7 +166,7 @@ class CaptureView:
             content=ft.Column(tight=True, width=340, height=360, scroll=ft.ScrollMode.AUTO, controls=rows),
             actions=[ft.TextButton("Close", on_click=close_dialog)],
         )
-        self.page.open(dialog)
+        self.page.show_dialog(dialog)
 
     def _use_inbox_message(self, message_id: int, parsed: dict | None) -> None:
         if parsed is None:

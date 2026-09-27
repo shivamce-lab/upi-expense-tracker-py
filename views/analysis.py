@@ -45,7 +45,7 @@ class AnalysisView:
                                         ft.CircleAvatar(bgcolor=c["color"], radius=8),
                                         ft.Text(c["name"], size=13),
                                     ]),
-                                    ft.Text(f"-${c['total']:,.2f}   {pct:.0f}%", size=12, color=ft.Colors.RED_400),
+                                    ft.Text(f"-₹{c['total']:,.2f}   {pct:.0f}%", size=12, color=ft.Colors.RED_400),
                                 ],
                             ),
                             ft.ProgressBar(value=pct / 100, color=c["color"], bgcolor=ft.Colors.GREY_100, height=4),

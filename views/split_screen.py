@@ -37,7 +37,7 @@ class SplitScreenView:
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         controls=[
                             ft.Text(t["person"], size=14, weight=ft.FontWeight.W_600),
-                            ft.Text(f"Owes ${t['owed']:,.2f}  ({t['unsettled']} unsettled)", size=12, color=ft.Colors.RED_400 if t["owed"] > 0 else ft.Colors.GREEN_600),
+                            ft.Text(f"Owes ₹{t['owed']:,.2f}  ({t['unsettled']} unsettled)", size=12, color=ft.Colors.RED_400 if t["owed"] > 0 else ft.Colors.GREEN_600),
                         ],
                     )
                 )
@@ -54,7 +54,7 @@ class SplitScreenView:
                     ft.Row(
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         controls=[
-                            ft.Text(f"{s['person']}: ${s['share']:,.2f}", size=12),
+                            ft.Text(f"{s['person']}: ₹{s['share']:,.2f}", size=12),
                             ft.Switch(
                                 value=bool(s["settled"]),
                                 label="Settled",
@@ -72,7 +72,7 @@ class SplitScreenView:
                             ft.Row(
                                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                                 controls=[
-                                    ft.Text(f"{t.get('category_name') or 'Uncategorized'} · ${t['amount']:,.2f}", size=13, weight=ft.FontWeight.W_600),
+                                    ft.Text(f"{t.get('category_name') or 'Uncategorized'} · ₹{t['amount']:,.2f}", size=13, weight=ft.FontWeight.W_600),
                                     ft.TextButton("Split with…", on_click=lambda e, tid=t["id"]: self._open_split_dialog(tid)),
                                 ],
                             ),
@@ -153,7 +153,7 @@ class SplitScreenView:
             ),
             actions=[ft.TextButton("Cancel", on_click=close_dialog), ft.FilledButton("Save", on_click=save)],
         )
-        self.page.open(dialog)
+        self.page.show_dialog(dialog)
 
 
 if __name__ == "__main__":

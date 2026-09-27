@@ -8,14 +8,18 @@ import flet as ft
 import components
 import db
 import state
-
+import theme
 
 class RecordsView:
     """Builds and manages the Records screen and its Add/Edit transaction dialog."""
 
     def __init__(self, page: ft.Page) -> None:
         self.page = page
-        self.container = ft.Container(expand=True, bgcolor=ft.Colors.WHITE)
+        self.palette = theme.get_palette()
+        self.container = ft.Container(
+        expand=True,
+        bgcolor=self.palette["bg"],
+        )
 
     def build(self) -> ft.Container:
         """Build (or rebuild) the Records screen content."""
@@ -27,6 +31,7 @@ class RecordsView:
         self.page.update()
 
     def _build_body(self) -> ft.Control:
+        self.palette = theme.get_palette()
         year, month = state.get_month()
         totals = db.month_totals(year, month)
         month_label = dt.date(year, month, 1).strftime("%B, %Y")
@@ -98,7 +103,7 @@ class RecordsView:
                     ft.Column(
                         spacing=4,
                         controls=[
-                            ft.Text(header_text, size=12, weight=ft.FontWeight.BOLD, color=ft.Colors.GREY_600),
+                            ft.Text(header_text, size=12, weight=ft.FontWeight.BOLD, color=self.palette["muted"]),
                             *rows,
                         ],
                     )
@@ -178,7 +183,7 @@ class RecordsView:
 
         type_toggle = ft.Tabs(
             selected_index=0 if type_value == "expense" else 1,
-            tabs=[ft.Tab(content="Expense"), ft.Tab(content="Income")],
+            tabs=[ft.Tab(label="Expense"), ft.Tab(label="Income")],
         )
 
         def type_changed(e: ft.ControlEvent) -> None:
@@ -190,14 +195,13 @@ class RecordsView:
         def date_picked(e: ft.ControlEvent) -> None:
             if date_picker.value:
                 picked_date["value"] = date_picker.value.date().isoformat() if hasattr(date_picker.value, "date") else str(date_picker.value)[:10]
-                date_button.text = picked_date["value"]
+                date_button.content = picked_date["value"]
                 self.page.update()
 
         date_picker = ft.DatePicker(on_change=date_picked)
-        self.page.overlay.append(date_picker)
 
         def open_date_picker(e: ft.ControlEvent) -> None:
-            self.page.open(date_picker)
+            self.page.show_dialog(date_picker)
 
         date_button.on_click = open_date_picker
 
@@ -251,7 +255,7 @@ class RecordsView:
             ),
             actions=[ft.TextButton("Cancel", on_click=close_dialog), ft.FilledButton("Save", on_click=save)],
         )
-        self.page.open(dialog)
+        self.page.show_dialog(dialog)
 
     def open_delete_dialog(self, txn_id: int) -> None:
         """Open a confirmation dialog before deleting a transaction."""
@@ -277,4 +281,4 @@ class RecordsView:
                 ft.TextButton("Delete", on_click=confirm_delete, style=ft.ButtonStyle(color=ft.Colors.RED_400)),
             ],
         )
-        self.page.open(dialog)
+        self.page.show_dialog(dialog)

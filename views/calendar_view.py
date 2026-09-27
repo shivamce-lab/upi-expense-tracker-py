@@ -58,7 +58,7 @@ class CalendarView:
         )
 
         weekday_labels = ft.Row(
-            controls=[ft.Container(width=44, alignment=ft.alignment.center, content=ft.Text(lbl, size=10, color=ft.Colors.GREY_500))
+            controls=[ft.Container(width=44, alignment=ft.Alignment.CENTER, content=ft.Text(lbl, size=10, color=ft.Colors.GREY_500))
                       for lbl in ["S", "M", "T", "W", "T", "F", "S"]]
         )
 
@@ -88,7 +88,7 @@ class CalendarView:
                 ft.Container(
                     width=44, height=44, border_radius=8,
                     bgcolor=ft.Colors.BLUE_50 if is_selected else None,
-                    alignment=ft.alignment.center,
+                    alignment=ft.Alignment.CENTER,
                     on_click=lambda e, d=date_str: pick_day(d),
                     content=ft.Column(
                         spacing=2, horizontal_alignment=ft.CrossAxisAlignment.CENTER,

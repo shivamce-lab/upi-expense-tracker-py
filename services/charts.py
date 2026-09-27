@@ -3,14 +3,10 @@ import calendar
 import datetime as dt
 from decimal import Decimal
 
-
 import flet as ft
 import flet_charts as fch
 
-
 import db
-
-
 
 
 def _empty_bar(height: int = 220) -> fch.BarChart:
@@ -23,8 +19,6 @@ def _empty_bar(height: int = 220) -> fch.BarChart:
     )
 
 
-
-
 def weekly_bar(start_date: str | None = None) -> fch.BarChart:
     """Sun-to-Sat expense bar chart for the week containing start_date (default today)."""
     if start_date is None:
@@ -35,19 +29,15 @@ def weekly_bar(start_date: str | None = None) -> fch.BarChart:
     days = [sunday + dt.timedelta(days=i) for i in range(7)]
     labels = ["S", "M", "T", "W", "T", "F", "S"]
 
-
     daily = db.daily_totals(days[0].isoformat(), days[-1].isoformat())
     by_date = {d["date"]: d["expense"] for d in daily}
-
 
     values = [float(by_date.get(day.isoformat(), Decimal("0.00"))) for day in days]
     if all(v == 0 for v in values):
         return _empty_bar()
 
-
     max_val = max(values)
     max_y = max_val * 1.2 if max_val > 0 else 10
-
 
     groups = []
     for i, v in enumerate(values):
@@ -66,7 +56,6 @@ def weekly_bar(start_date: str | None = None) -> fch.BarChart:
             )
         )
 
-
     return fch.BarChart(
         groups=groups,
         max_y=max_y,
@@ -80,8 +69,6 @@ def weekly_bar(start_date: str | None = None) -> fch.BarChart:
     )
 
 
-
-
 def monthly_line(year: int | None = None, month: int | None = None) -> fch.LineChart:
     """Curved blue line chart with one point per day of the given month (default current)."""
     today = dt.date.today()
@@ -91,17 +78,14 @@ def monthly_line(year: int | None = None, month: int | None = None) -> fch.LineC
     start = dt.date(year, month, 1).isoformat()
     end = dt.date(year, month, last_day).isoformat()
 
-
     daily = db.daily_totals(start, end)
     points = [fch.LineChartDataPoint(i + 1, float(d["expense"])) for i, d in enumerate(daily)]
-
 
     if not points or all(p.y == 0 for p in points):
         points = [fch.LineChartDataPoint(1, 0), fch.LineChartDataPoint(last_day, 0)]
         max_y = 10
     else:
         max_y = max(p.y for p in points) * 1.2 or 10
-
 
     data_series = [
         fch.LineChartData(
@@ -114,7 +98,6 @@ def monthly_line(year: int | None = None, month: int | None = None) -> fch.LineC
         )
     ]
 
-
     return fch.LineChart(
         data_series=data_series,
         min_y=0,
@@ -125,8 +108,6 @@ def monthly_line(year: int | None = None, month: int | None = None) -> fch.LineC
         left_axis=fch.ChartAxis(label_size=40),
         bottom_axis=fch.ChartAxis(label_size=20),
     )
-
-
 
 
 def month_over_month() -> fch.BarChart:
@@ -142,7 +123,6 @@ def month_over_month() -> fch.BarChart:
             y -= 1
     months.reverse()
 
-
     values = []
     labels = []
     for y, m in months:
@@ -150,10 +130,8 @@ def month_over_month() -> fch.BarChart:
         values.append(float(totals["expense"]))
         labels.append(dt.date(y, m, 1).strftime("%b"))
 
-
     max_val = max(values) if values else 0
     max_y = max_val * 1.2 if max_val > 0 else 10
-
 
     groups = []
     for i, v in enumerate(values):
@@ -172,7 +150,6 @@ def month_over_month() -> fch.BarChart:
             )
         )
 
-
     return fch.BarChart(
         groups=groups,
         max_y=max_y,
@@ -186,13 +163,10 @@ def month_over_month() -> fch.BarChart:
     )
 
 
-
-
 def category_pie(start: str, end: str) -> fch.PieChart:
     """Pie chart of expense category totals in [start, end], with a center total label."""
     cats = db.category_totals(start, end)
     total = sum((c["total"] for c in cats), Decimal("0.00"))
-
 
     if not cats or total == 0:
         return fch.PieChart(
@@ -201,7 +175,6 @@ def category_pie(start: str, end: str) -> fch.PieChart:
             center_space_radius=50,
             height=220,
         )
-
 
     sections = []
     for c in cats:
@@ -215,7 +188,6 @@ def category_pie(start: str, end: str) -> fch.PieChart:
                 radius=60,
             )
         )
-
 
     return fch.PieChart(
         sections=sections,

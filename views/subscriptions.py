@@ -52,7 +52,7 @@ class SubscriptionsView:
                                             icon=ft.Icons.MORE_VERT,
                                             items=[
                                                 ft.PopupMenuItem(
-                                                    text="Cancel subscription",
+                                                    content="Cancel subscription",
                                                     on_click=lambda e, sid=s["id"]: self._cancel(sid),
                                                 ),
                                             ],
@@ -64,8 +64,8 @@ class SubscriptionsView:
                                 ft.Row(
                                     alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                                     controls=[
-                                        ft.Text(f"Monthly: ${s['monthly_cost']:,.2f}", size=11, color=ft.Colors.GREY_600),
-                                        ft.Text(f"Yearly: ${s['yearly_cost']:,.2f}", size=11, color=ft.Colors.GREY_600),
+                                        ft.Text(f"Monthly: ₹{s['monthly_cost']:,.2f}", size=11, color=ft.Colors.GREY_600),
+                                        ft.Text(f"Yearly: ₹{s['yearly_cost']:,.2f}", size=11, color=ft.Colors.GREY_600),
                                     ],
                                 ),
                             ],
@@ -81,7 +81,7 @@ class SubscriptionsView:
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                 controls=[
                     ft.Text("Total monthly cost", size=13, color=ft.Colors.GREY_700),
-                    ft.Text(f"${total_monthly:,.2f}", size=16, weight=ft.FontWeight.BOLD),
+                    ft.Text(f"₹{total_monthly:,.2f}", size=16, weight=ft.FontWeight.BOLD),
                 ],
             ),
         )
@@ -169,7 +169,7 @@ class SubscriptionsView:
             content=ft.Column(tight=True, width=320, controls=[name_field, amount_field, category_dropdown, account_dropdown, cycle_dropdown]),
             actions=[ft.TextButton("Cancel", on_click=close_dialog), ft.FilledButton("Save", on_click=save)],
         )
-        self.page.open(dialog)
+        self.page.show_dialog(dialog)
 
 
 if __name__ == "__main__":

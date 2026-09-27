@@ -39,7 +39,7 @@ class AccountsView:
             spacing=2,
             controls=[
                 ft.Text("All Accounts", size=12, color=ft.Colors.GREY_600),
-                ft.Text(f"${total_balance:,.2f}", size=26, weight=ft.FontWeight.BOLD),
+                ft.Text(f"₹{total_balance:,.2f}", size=26, weight=ft.FontWeight.BOLD),
             ],
         )
 
@@ -47,11 +47,11 @@ class AccountsView:
             controls=[
                 ft.Column(expand=True, controls=[
                     ft.Text("EXPENSE SO FAR", size=11, color=ft.Colors.GREY_600),
-                    ft.Text(f"${month_totals['expense']:,.2f}", size=15, weight=ft.FontWeight.BOLD, color=ft.Colors.RED_400),
+                    ft.Text(f"₹{month_totals['expense']:,.2f}", size=15, weight=ft.FontWeight.BOLD, color=ft.Colors.RED_400),
                 ]),
                 ft.Column(expand=True, controls=[
                     ft.Text("INCOME SO FAR", size=11, color=ft.Colors.GREY_600),
-                    ft.Text(f"${month_totals['income']:,.2f}", size=15, weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_600),
+                    ft.Text(f"₹{month_totals['income']:,.2f}", size=15, weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_600),
                 ]),
             ]
         )
@@ -65,7 +65,7 @@ class AccountsView:
                 controls=[
                     ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN, controls=[
                         ft.Text("NET WORTH", size=11, color=ft.Colors.GREY_600, weight=ft.FontWeight.W_600),
-                        ft.Text(f"${nw['net_worth']:,.2f}", size=16, weight=ft.FontWeight.BOLD,
+                        ft.Text(f"₹{nw['net_worth']:,.2f}", size=16, weight=ft.FontWeight.BOLD,
                                 color=ft.Colors.GREEN_600 if nw["net_worth"] >= 0 else ft.Colors.RED_400),
                     ]),
                     ft.Row(controls=[
@@ -93,7 +93,7 @@ class AccountsView:
                                 ft.Text(a["name"], size=14, weight=ft.FontWeight.W_600),
                                 ft.Text(f"Last: {last_date}", size=11, color=ft.Colors.GREY_600),
                             ]),
-                            ft.Text(f"${a['balance']:,.2f}", size=14, weight=ft.FontWeight.BOLD),
+                            ft.Text(f"₹{a['balance']:,.2f}", size=14, weight=ft.FontWeight.BOLD),
                         ]),
                     )
                 )
@@ -160,7 +160,7 @@ class AccountsView:
             content=ft.Column(tight=True, width=300, controls=[name_field, type_dropdown, balance_field]),
             actions=[ft.TextButton("Cancel", on_click=close_dialog), ft.FilledButton("Save", on_click=save)],
         )
-        self.page.open(dialog)
+        self.page.show_dialog(dialog)
 
 
 if __name__ == "__main__":

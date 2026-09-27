@@ -60,14 +60,14 @@ class BudgetsView:
                         expand=True,
                         controls=[
                             ft.Text("TOTAL BUDGET", size=11, color=ft.Colors.GREY_600),
-                            ft.Text(f"${total_budget:,.2f}", size=16, weight=ft.FontWeight.BOLD),
+                            ft.Text(f"₹{total_budget:,.2f}", size=16, weight=ft.FontWeight.BOLD),
                         ],
                     ),
                     ft.Column(
                         expand=True,
                         controls=[
                             ft.Text("TOTAL SPENT", size=11, color=ft.Colors.GREY_600),
-                            ft.Text(f"${total_spent:,.2f}", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.RED_400),
+                            ft.Text(f"₹{total_spent:,.2f}", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.RED_400),
                         ],
                     ),
                 ]
@@ -91,9 +91,9 @@ class BudgetsView:
                             ft.Text(b["category_name"], size=14, weight=ft.FontWeight.W_600, expand=True),
                         ]
                     ),
-                    ft.Text(f"Limit: ${s['limit']:,.2f}", size=12, color=ft.Colors.GREY_700),
-                    ft.Text(f"Spent: ${s['spent']:,.2f}", size=12, color=ft.Colors.GREY_700),
-                    ft.Text(f"Remaining: ${s['remaining']:,.2f}", size=12, color=ft.Colors.GREY_700),
+                    ft.Text(f"Limit: ₹{s['limit']:,.2f}", size=12, color=ft.Colors.GREY_700),
+                    ft.Text(f"Spent: ₹{s['spent']:,.2f}", size=12, color=ft.Colors.GREY_700),
+                    ft.Text(f"Remaining: ₹{s['remaining']:,.2f}", size=12, color=ft.Colors.GREY_700),
                     ft.ProgressBar(value=pct, color=bar_color, bgcolor=ft.Colors.GREY_100, height=6),
                 ]
                 if over:

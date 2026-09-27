@@ -39,7 +39,7 @@ def compute_networth() -> dict:
     }
 
 
-def debt_check_line(currency: str = "$") -> str:
+def debt_check_line(currency: str = "₹") -> str:
     """Return a plain-English 'for every X you own, you owe Y' style line."""
     nw = compute_networth()
     if nw["assets"] == 0 and nw["liabilities"] == 0:

@@ -48,7 +48,7 @@ class QuickAddView:
                     tiles.append(
                         ft.Container(
                             width=100, height=100, bgcolor=c["color"], border_radius=16,
-                            alignment=ft.alignment.center,
+                            alignment=ft.Alignment.CENTER,
                             content=ft.Column(
                                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                 controls=[ft.Text(c["icon"], size=28), ft.Text(c["name"], size=12, color=ft.Colors.WHITE)],
@@ -70,7 +70,7 @@ class QuickAddView:
         self._refresh()
 
     def _numpad_view(self) -> ft.Control:
-        display = ft.Text(f"${self.entered}", size=32, weight=ft.FontWeight.BOLD)
+        display = ft.Text(f"₹{self.entered}", size=32, weight=ft.FontWeight.BOLD)
 
         def press(digit: str) -> None:
             if digit == "." and "." in self.entered:
@@ -79,12 +79,12 @@ class QuickAddView:
                 self.entered = digit
             else:
                 self.entered += digit
-            display.value = f"${self.entered}"
+            display.value = f"₹{self.entered}"
             self.page.update()
 
         def backspace(e: ft.ControlEvent) -> None:
             self.entered = self.entered[:-1] or "0"
-            display.value = f"${self.entered}"
+            display.value = f"₹{self.entered}"
             self.page.update()
 
         def save(e: ft.ControlEvent) -> None:
@@ -117,7 +117,7 @@ class QuickAddView:
                 if k == "⌫":
                     buttons.append(ft.IconButton(icon=ft.Icons.BACKSPACE_OUTLINED, on_click=backspace))
                 else:
-                    buttons.append(ft.ElevatedButton(k, width=70, height=56, on_click=lambda e, d=k: press(d)))
+                    buttons.append(ft.Button(content=k, width=70, height=56, on_click=lambda e, d=k: press(d)))
             rows.append(ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=buttons))
 
         return ft.Column(
