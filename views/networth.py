@@ -1,7 +1,6 @@
 """Net Worth screen: assets vs liabilities donut and a plain-English debt-check line."""
 import flet as ft
 import flet_charts as fch
-
 import components
 from services import networth
 

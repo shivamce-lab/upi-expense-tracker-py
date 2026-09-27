@@ -139,7 +139,7 @@ class SettingsView:
                 backup_password_field,
                 ft.Row(controls=[
                     ft.Button(content="Create encrypted backup", icon=ft.Icons.LOCK_OUTLINE, on_click=do_backup),
-                    ft.OutlinedButton("Restore from file", icon=ft.Icons.RESTORE, on_click=lambda e: self.page.run_task(do_restore)),
+                    ft.OutlinedButton("Restore from file", icon=ft.Icons.RESTORE, on_click=lambda e: self.page.run_task(do_restore, e)),
                 ]),
 
                 components.section_title("Google Drive sync (optional, off by default)"),

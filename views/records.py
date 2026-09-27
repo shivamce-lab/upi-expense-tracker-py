@@ -180,16 +180,20 @@ class RecordsView:
             else:
                 category_dropdown.value = None
             self.page.update()
-            
+
+        type_toggle = ft.Tabs(
+            length=2,
+            selected_index=0 if type_value == "expense" else 1,
+            content=ft.TabBar(
+            tabs=[ft.Tab(label="Expense"), ft.Tab(label="Income")],
+            ),
+            )
+
         def type_changed(e: ft.ControlEvent) -> None:
-            new_type = "expense" if e.control.selected_index == 0 else "income"
+            new_type = "expense" if type_toggle.selected_index == 0 else "income"
             refresh_categories(new_type)
 
-        type_toggle = ft.CupertinoSegmentedButton(
-            selected_index=0 if type_value == "expense" else 1,
-            controls=[ft.Text("Expense"), ft.Text("Income")],
-            on_change=type_changed,
-        )
+            type_toggle.on_change = type_changed
 
         def date_picked(e: ft.ControlEvent) -> None:
             if date_picker.value:
@@ -205,7 +209,8 @@ class RecordsView:
         date_button.on_click = open_date_picker
 
         def close_dialog(e: ft.ControlEvent | None = None) -> None:
-            self.page.pop_dialog()
+            dialog.open = False
+            self.page.update()
 
         def save(e: ft.ControlEvent) -> None:
             try:
