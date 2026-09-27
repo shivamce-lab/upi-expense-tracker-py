@@ -1,5 +1,6 @@
 """Net Worth screen: assets vs liabilities donut and a plain-English debt-check line."""
 import flet as ft
+import flet_charts as fch
 
 import components
 from services import networth
@@ -30,13 +31,13 @@ class NetWorthView:
         if assets == 0 and liabilities == 0:
             donut = components.empty_state("Add accounts to see your net worth.")
         else:
-            donut = ft.PieChart(
+            donut = fch.PieChart(
                 sections=[
-                    ft.PieChartSection(
+                    fch.PieChartSection(
                         value=float(assets) or 0.01, title=f"{own_pct:.0f}%", color=ft.Colors.GREEN_400,
                         radius=60, title_style=ft.TextStyle(color=ft.Colors.WHITE, size=12, weight=ft.FontWeight.BOLD),
                     ),
-                    ft.PieChartSection(
+                    fch.PieChartSection(
                         value=float(liabilities) or 0.01, title=f"{owe_pct:.0f}%", color=ft.Colors.RED_400,
                         radius=60, title_style=ft.TextStyle(color=ft.Colors.WHITE, size=12, weight=ft.FontWeight.BOLD),
                     ),
